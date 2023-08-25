@@ -1,0 +1,31 @@
+﻿@model BookLibraryApi.Models.Book
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Library Control Panel</h1>
+
+<h2>Book details</h2>
+
+<div>
+    <ul class="list-group">
+        <li class="list-group-item">Title: @Model.Title</li>
+        <li class="list-group-item">Author: @Model.Author</li>
+        <li class="list-group-item">Genre: @Model.Genre</li>
+        <li class="list-group-item">Year of publication: @Model.PublicationYear</li>
+        <li class="list-group-item">Description: @Model.Description</li>
+        <li class="list-group-item">
+            Available For Loan:  @if (Model.IsAvailableForLoan)
+            {
+                <span>Yes</span> <span class="bg-success text-white p-1 d-inline-block rounded-circle" style="width: 10px; height: 10px;"></span>
+            }
+            else
+            {
+                <span>No</span> <span class="bg-danger text-white p-1 d-inline-block rounded-circle" style="width: 10px; height: 10px;"></span>
+            }
+        </li>
+    </ul>
+    <a href="@Url.Action("Edit", new { id = Model.BookId })" class="btn btn-success">Edit</a>
+    <a href="@Url.Action("Delete", new { id = Model.BookId })" class="btn btn-danger">Delete</a>
+</div>

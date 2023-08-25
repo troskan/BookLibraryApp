@@ -1,0 +1,64 @@
+﻿@model IEnumerable<BookLibraryApi.Models.Book>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Library Control Panel</h1>
+
+<p>
+    <form asp-controller="Book" asp-action="Search" method="get">
+        <input type="text" name="searchString" style="height:contain;" placeholder="Search for a book" />
+        <button type="submit" class="btn btn-outline-success">Search</button>
+        <button type="submit" class="btn btn-secondary">Reset</button>
+    </form>
+    <button type="button" onclick="location.href='@Url.Action("Create", "Book")'" class="btn btn-success">Create Book</button>
+
+
+
+
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Release</th>
+            <th>Available for loan</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.BookId</td>
+                <td>@item.Title</td>
+                <td>@item.Author</td>
+                <td>@item.Genre</td>
+                <td>@item.PublicationYear</td>
+                <td>
+                    @if (item.IsAvailableForLoan)
+                    {
+                        <span>Yes</span> <span class="bg-success text-white p-1 d-inline-block rounded-circle" style="width: 10px; height: 10px;"></span>
+                    }
+                    else
+                    {
+                        <span>No</span> <span class="bg-danger text-white p-1 d-inline-block rounded-circle" style="width: 10px; height: 10px;"></span>
+                    }
+                </td>
+
+
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.BookId }) |
+                    @Html.ActionLink("Details", "Details", new { id=item.BookId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id=item.BookId })
+                </td>
+            </tr>
+        }
+    </tbody>
+
+  
+</table>
