@@ -1,5 +1,6 @@
 ﻿using BookLibraryApi.Models;
 using BookLibraryApi.Repositories.Interface;
+using BookLibraryApp.Services;
 using BookLibraryApp.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,12 @@ namespace BookLibraryApp.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<BookController> _logger;
-        public BookController(HttpClient httpClient, ILogger<BookController> logger)
+        private readonly APIService _apiService;
+        public BookController(HttpClient httpClient, ILogger<BookController> logger, APIService apiService)
         {
             _logger = logger;
             _httpClient = httpClient;   
-
+            _apiService = apiService;
         }
         // GET: BookController
         public async Task<IActionResult> Index(string searchString = null)
@@ -78,36 +80,46 @@ namespace BookLibraryApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Book book)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var apiUrl = "https://localhost:7262/book";
-                try
-                {
-                    var response = await _httpClient.PostAsJsonAsync(apiUrl, book);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        _logger.LogInformation("Post Successful");
-                        return RedirectToAction("Index");
-
-                    }
-                    else
-                    {
-                        _logger.LogInformation("Post unsuccessful");
-                        return RedirectToAction("Index");
-
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex.ToString());
-                    ModelState.AddModelError(string.Empty, "An error occurred while creating the book.");
-                    return View(book);
-                }
-
+                await _apiService.AddBook(book);
+                return View(book);
             }
-            return View(book);
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
+
+            //if (ModelState.IsValid)
+            //{
+            //    var apiUrl = "https://localhost:7262/book";
+            //    try
+            //    {
+            //        var response = await _httpClient.PostAsJsonAsync(apiUrl, book);
+
+            //        if (response.IsSuccessStatusCode)
+            //        {
+            //            _logger.LogInformation("Post Successful");
+            //            return RedirectToAction("Index");
+
+            //        }
+            //        else
+            //        {
+            //            _logger.LogInformation("Post unsuccessful");
+            //            return RedirectToAction("Index");
+
+            //        }
+
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        _logger.LogError(ex.ToString());
+            //        ModelState.AddModelError(string.Empty, "An error occurred while creating the book.");
+            //        return View(book);
+            //    }
+
+            //}
+            //return View(book);
 
         }
         // GET: book/edit

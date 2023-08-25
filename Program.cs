@@ -1,4 +1,5 @@
 using BookLibraryApp.Controllers;
+using BookLibraryApp.Services;
 
 namespace BookLibraryApp
 {
@@ -11,6 +12,7 @@ namespace BookLibraryApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpClient();
+            builder.Services.AddScoped<APIService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
