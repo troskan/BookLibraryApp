@@ -2,22 +2,32 @@
 
 @{
     ViewData["Title"] = "Index";
+    string height = "100px";
 }
 
-<h1>Library Control Panel</h1>
 
-<p>
-    <form asp-controller="Book" asp-action="Search" method="get">
-        <input type="text" name="searchString" style="height:contain;" placeholder="Search for a book" />
-        <button type="submit" class="btn btn-outline-success">Search</button>
-        <button type="submit" class="btn btn-secondary">Reset</button>
-    </form>
-    <button type="button" onclick="location.href='@Url.Action("Create", "Book")'" class="btn btn-success">Create Book</button>
+<div style="display: flex;">
+    <!-- First div with buttons -->
+    <div style="margin-right: 20px;">
+        <h1>Library Control Panel</h1>
+
+        <form asp-controller="Book" asp-action="Search" method="get">
+            <input type="text" name="searchString" style="height:contain;" placeholder="Search for a book" />
+            <button type="submit" class="btn btn-outline-success">Search</button>
+            <button type="submit" class="btn btn-secondary">Reset</button>
+        </form>
+        <button type="button" onclick="location.href='@Url.Action("Create", "Book")'" class="btn btn-success">Create Book</button>
+    </div>
+
+    <!-- Second div with image -->
+    <div style="flex: 1;">
+        <img src="https://images.unsplash.com/photo-1569511166187-97eb6e387e19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1820&q=80"
+             style="width: 100%; height: @height; object-fit: cover; overflow: hidden; border-radius: 5px; opacity: 0.9;" />
+    </div>
+</div>
 
 
 
-
-</p>
 <table class="table">
     <thead>
         <tr>

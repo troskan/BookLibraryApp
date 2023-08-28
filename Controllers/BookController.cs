@@ -45,15 +45,8 @@ namespace BookLibraryApp.Controllers
         public async Task<ActionResult> Details(int id)
         {
 
-            var response = await _httpClient.GetAsync($"https://localhost:7262/books/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var book = JsonConvert.DeserializeObject<Book>(jsonResponse);
-                return View(book);
-            }
-            return View("Error");
+            Book book = await _apiService.GetBook(id);
+            return View(book);
         }
 
 
@@ -209,20 +202,7 @@ namespace BookLibraryApp.Controllers
             return RedirectToAction("Index");
         }
 
-        // POST: BookController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+
         public async Task<IActionResult> Search(string searchString)
         {
             // Use the query string parameter instead of the route parameter
