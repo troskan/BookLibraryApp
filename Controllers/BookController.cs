@@ -30,15 +30,16 @@ namespace BookLibraryApp.Controllers
                 return await Search(searchString);
             }
 
-            var response = await _httpClient.GetAsync("https://localhost:7262/books");
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var books = JsonConvert.DeserializeObject<List<Book>>(jsonResponse);
+                var books = await _apiService.GetAllBooks();
                 return View(books);
             }
-            return View("Error");
+            catch (Exception)
+            {
+                return View("Error");
+
+            }
         }
 
         //GetId
@@ -170,7 +171,7 @@ namespace BookLibraryApp.Controllers
         }
 
 
-        //GetBook{string}
+        //GetBook{string} *Search*
         public async Task<IActionResult> Search(string searchString)
         {
             var response = await _httpClient.GetAsync($"https://localhost:7262/search?searchString={searchString}");

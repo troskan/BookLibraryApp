@@ -18,7 +18,27 @@ namespace BookLibraryApp.Services
         public string ApiUrl { get; set; } = "https://localhost:7262";
 
         //GetAllBooks
+        public async Task<List<Book>> GetAllBooks()
+        {
+            string endpoint = ApiUrl + "/books";
 
+            var response = await _httpClient.GetAsync(endpoint);
+            if (response.IsSuccessStatusCode)
+            {
+
+                var jsonBook = await response.Content.ReadAsStringAsync();
+                var book = JsonConvert.DeserializeObject<List<Book>>(jsonBook);
+
+                if (book != null)
+                {
+                    return book;
+                }
+
+                return new List<Book>();
+
+            }
+            else { return new List<Book>(); }
+        }
         //DeleteBook
 
         //UpdateBook
