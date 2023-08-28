@@ -22,8 +22,8 @@ namespace BookLibraryApp.Controllers
             _httpClient = httpClient;   
             _apiService = apiService;
         }
-        // GET: BookController
-        public async Task<IActionResult> Index(string searchString = null)
+        // GetAll
+        public async Task<IActionResult> Index(string searchString = "")
         {
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -41,7 +41,7 @@ namespace BookLibraryApp.Controllers
             return View("Error");
         }
 
-        // GET: BookController/Details/5
+        //GetId
         public async Task<ActionResult> Details(int id)
         {
 
@@ -50,8 +50,7 @@ namespace BookLibraryApp.Controllers
         }
 
 
-        //GETGenres
-        // POST: BookController/Create
+        //GetAllGenres
         [HttpGet]
         public async Task<ActionResult> Create()
         {
@@ -68,7 +67,7 @@ namespace BookLibraryApp.Controllers
 
         }
 
-        // POST: BookController/Create
+        //PostBook
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Book book)
@@ -82,40 +81,8 @@ namespace BookLibraryApp.Controllers
             {
                 return RedirectToAction("Index");
             }
-
-            //if (ModelState.IsValid)
-            //{
-            //    var apiUrl = "https://localhost:7262/book";
-            //    try
-            //    {
-            //        var response = await _httpClient.PostAsJsonAsync(apiUrl, book);
-
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            _logger.LogInformation("Post Successful");
-            //            return RedirectToAction("Index");
-
-            //        }
-            //        else
-            //        {
-            //            _logger.LogInformation("Post unsuccessful");
-            //            return RedirectToAction("Index");
-
-            //        }
-
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _logger.LogError(ex.ToString());
-            //        ModelState.AddModelError(string.Empty, "An error occurred while creating the book.");
-            //        return View(book);
-            //    }
-
-            //}
-            //return View(book);
-
         }
-        // GET: book/edit
+        //GetUpdateBook
         [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
@@ -148,7 +115,7 @@ namespace BookLibraryApp.Controllers
 
             return View(viewModel);
         }
-        // POST: BookController/Edit/5
+        //UpdateBook
         [HttpPost]
         public async Task<ActionResult> Edit(int id, Book bookToEdit) 
         {
@@ -193,7 +160,7 @@ namespace BookLibraryApp.Controllers
 
         }
 
-        // GET: BookController/Delete/5
+        //DeleteBook
         public async Task<ActionResult> Delete(int id)
         {
             var apiDeleteUrl = $"https://localhost:7262/book/{id}";
@@ -203,9 +170,9 @@ namespace BookLibraryApp.Controllers
         }
 
 
+        //GetBook{string}
         public async Task<IActionResult> Search(string searchString)
         {
-            // Use the query string parameter instead of the route parameter
             var response = await _httpClient.GetAsync($"https://localhost:7262/search?searchString={searchString}");
 
             if (response.IsSuccessStatusCode)

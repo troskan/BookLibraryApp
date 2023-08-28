@@ -16,6 +16,18 @@ namespace BookLibraryApp.Services
             _logger = logger;
         }
         public string ApiUrl { get; set; } = "https://localhost:7262";
+
+        //GetAllBooks
+
+        //DeleteBook
+
+        //UpdateBook
+
+        //GetBy{string} *Search*
+
+
+
+        //AddBook
         public async Task<HttpResponseMessage> AddBook(Book bookToAdd)
         {
             string endpoint = "/book";
@@ -29,10 +41,11 @@ namespace BookLibraryApp.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("Post has faild.");
+                _logger.LogError($"Post has faild, {ex.Message}");
                 throw;
             }
         }
+        //GetBookId
         public async Task<Book> GetBook(int id)
         {
             var response = await _httpClient.GetAsync($"{ApiUrl}/books/{id}");
@@ -51,5 +64,6 @@ namespace BookLibraryApp.Services
                 throw new Exception($"Failed to fetch book with id: /books/{id}");
             }
         }
+
     }
 }
