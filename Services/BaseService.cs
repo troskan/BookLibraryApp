@@ -20,7 +20,7 @@ namespace BookLibraryApp.Services
         {
             try
             {
-                var client = httpClient.CreateClient("TestApi");
+                var client = httpClient.CreateClient();
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Headers.Add("Accept", "application/json");
                 message.RequestUri = new Uri(apiRequest.Url);
