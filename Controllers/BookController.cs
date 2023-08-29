@@ -55,16 +55,16 @@ namespace BookLibraryApp.Controllers
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            var apiUrl = "https://localhost:7262/genres";
-            var response = await _httpClient.GetAsync(apiUrl);
-            List<string> genres = new List<string>();
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                genres = await response.Content.ReadFromJsonAsync<List<string>>();
+                var genres = await _apiService.GetGenres();
+                return View(genres);
             }
-            _logger.LogInformation("Inside Create");
-            return View(genres);
+            catch (Exception)
+            {
+                return View("Error");
+                throw;
+            }
 
         }
 

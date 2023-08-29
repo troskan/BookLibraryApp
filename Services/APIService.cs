@@ -39,6 +39,24 @@ namespace BookLibraryApp.Services
             }
             else { return new List<Book>(); }
         }
+        //GetGenres
+        public async Task<List<string>> GetGenres()
+        {
+            string endpoint = ApiUrl + "/genres";
+
+            var response = await _httpClient.GetAsync(endpoint);
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var genres = JsonConvert.DeserializeObject<List<string>>(json);
+                if (genres != null)
+                {
+                    return genres;
+                }
+                else return new List<string>();
+            }
+            else { return new List<string>(); }
+        }
         //DeleteBook
 
         //UpdateBook
