@@ -27,12 +27,17 @@ namespace BookLibraryApp.Services
             if (response.IsSuccessStatusCode)
             {
 
-                var jsonBook = await response.Content.ReadAsStringAsync();
-                var book = JsonConvert.DeserializeObject<List<Book>>(jsonBook);
+                var jsonApiResponse = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(jsonApiResponse);
 
-                if (book != null)
+                if (apiResponse?.IsSuccess == true && apiResponse.Result != null)
                 {
-                    return book;
+                    var books = apiResponse.Result as List<Book>;
+
+                    if (books != null)
+                    {
+                        return books; 
+                    }
                 }
 
                 return new List<Book>();

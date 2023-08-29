@@ -1,12 +1,13 @@
 ﻿using BookLibraryApi.Models;
 using BookLibraryApp.Models;
+using BookLibraryApp.Services.IServices;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 
 namespace BookLibraryApp.Services
 {
-    public class BaseService
+    public class BaseService : IBaseService
     {
         public ApiResponse responseModel { get; set; }
         public IHttpClientFactory httpClient { get; set; }
@@ -77,7 +78,7 @@ namespace BookLibraryApp.Services
             catch (Exception e)
             {
 
-                var dto = new APIResponse
+                var dto = new ApiResponse
                 {
                     ErrorMessages = new List<string> { Convert.ToString(e.Message) },
                     IsSuccess = false
