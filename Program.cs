@@ -12,7 +12,7 @@ namespace BookLibraryApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpClient();
-            builder.Services.AddTransient<APIService>();
+            builder.Services.AddTransient<BookApiService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

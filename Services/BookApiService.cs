@@ -6,13 +6,13 @@ using System.Net.Http;
 
 namespace BookLibraryApp.Services
 {
-    public class APIService
+    public class BookApiService
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _iHttp;
         private readonly ILogger _logger;
-        public APIService(HttpClient httpClient, ILogger<APIService> logger)
+        public BookApiService(IHttpClientFactory httpClient, ILogger<BookApiService> logger)
         {
-            _httpClient = httpClient;
+            _iHttp = httpClient;
             _logger = logger;
         }
         public string ApiUrl { get; set; } = "https://localhost:7262";
@@ -21,8 +21,9 @@ namespace BookLibraryApp.Services
         public async Task<List<Book>> GetAllBooks()
         {
             string endpoint = ApiUrl + "/books";
+            var client = _iHttp.CreateClient();
 
-            var response = await _httpClient.GetAsync(endpoint);
+            var response = await client.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
             {
 
@@ -43,8 +44,9 @@ namespace BookLibraryApp.Services
         public async Task<List<string>> GetGenres()
         {
             string endpoint = ApiUrl + "/genres";
+            var client = _iHttp.CreateClient();
 
-            var response = await _httpClient.GetAsync(endpoint);
+            var response = await client.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
@@ -58,7 +60,26 @@ namespace BookLibraryApp.Services
             else { return new List<string>(); }
         }
         //DeleteBook
+        public async Task<Book> DeleteBook(int id)
+        {
+            string endpoint = ApiUrl + $"/book/{id}";
+            var client = _iHttp.CreateClient();
 
+            var response = await client.GetAsync(endpoint);
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonBook = await response.Content.ReadAsStringAsync();
+                var book = JsonConvert.DeserializeObject<Book>(jsonBook);
+
+                if (book != null) 
+                {
+                    await client.DeleteAsync(endpoint);
+                    return book;
+                }
+            }
+            _logger.LogError("DeleteBook from ApiService returned null. Id was not found.");
+            return null;
+        }
         //UpdateBook
 
         //GetBy{string} *Search*
@@ -69,9 +90,10 @@ namespace BookLibraryApp.Services
         public async Task<HttpResponseMessage> AddBook(Book bookToAdd)
         {
             string endpoint = "/book";
+            var client = _iHttp.CreateClient();
             try
             {
-                var response = await _httpClient.PostAsJsonAsync(ApiUrl + endpoint, bookToAdd);
+                var response = await client.PostAsJsonAsync(ApiUrl + endpoint, bookToAdd);
                 _logger.LogInformation("Post has been made to Database.");
                 return response;
 
@@ -86,20 +108,20 @@ namespace BookLibraryApp.Services
         //GetBookId
         public async Task<Book> GetBook(int id)
         {
-            var response = await _httpClient.GetAsync($"{ApiUrl}/books/{id}");
+            var client = _iHttp.CreateClient();
+            var response = await client.GetAsync($"{ApiUrl}/books/{id}");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     var book = JsonConvert.DeserializeObject<Book>(jsonResponse);
-                _logger.LogInformation($"Attempting to deserialize Book {id}");
+                    _logger.LogInformation($"Attempting to deserialize Book {id}");
                     return book;
             }
             else
             {
                 _logger.LogInformation($"Failed to fetch book ID: {id}");
-
-                throw new Exception($"Failed to fetch book with id: /books/{id}");
+                return null;
             }
         }
 

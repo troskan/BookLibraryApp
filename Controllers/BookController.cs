@@ -15,8 +15,8 @@ namespace BookLibraryApp.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<BookController> _logger;
-        private readonly APIService _apiService;
-        public BookController(HttpClient httpClient, ILogger<BookController> logger, APIService apiService)
+        private readonly BookApiService _apiService;
+        public BookController(HttpClient httpClient, ILogger<BookController> logger, BookApiService apiService)
         {
             _logger = logger;
             _httpClient = httpClient;   
@@ -164,9 +164,15 @@ namespace BookLibraryApp.Controllers
         //DeleteBook
         public async Task<ActionResult> Delete(int id)
         {
-            var apiDeleteUrl = $"https://localhost:7262/book/{id}";
-            var response = await _httpClient.DeleteAsync(apiDeleteUrl);
-
+            try
+            {
+               await _apiService.DeleteBook(id);
+            }
+            catch (Exception)
+            {
+                return View("Error");
+                throw;
+            }
             return RedirectToAction("Index");
         }
 
