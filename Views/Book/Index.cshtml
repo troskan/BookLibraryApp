@@ -43,7 +43,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr id="tr-@item.BookId">
                 <td>@item.BookId</td>
                 <td>@item.Title</td>
                 <td>@item.Author</td>
@@ -62,9 +62,15 @@
 
 
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id=item.BookId }) |
-                    @Html.ActionLink("Details", "Details", new { id=item.BookId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id=item.BookId })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.BookId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.BookId }) |
+                    <a class="text-danger delete-link" id="@item.BookId"
+                       href='javascript:void(0);'
+                       onclick="confirmDelete('@item.BookId', '@Url.Action("Delete", "Book", new { id = item.BookId })')"
+                       onmouseover="highlightRow(this.id)"
+                       onmouseout="unhighlightRow(this.id)">Delete</a>
+
+
                 </td>
             </tr>
         }
@@ -72,3 +78,26 @@
 
   
 </table>
+
+<script>
+    function highlightRow(bookId) {
+        var row = document.getElementById('tr-' + bookId);
+        if (row) {
+            row.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+        }
+    }
+
+    function unhighlightRow(bookId) {
+        var row = document.getElementById('tr-' + bookId);
+        if (row) {
+            row.style.backgroundColor = '';  // Reset to original color
+        }
+    }
+
+    function confirmDelete(bookId, deleteUrl) {
+        var isConfirmed = window.confirm('Are you sure you want to delete this book?');
+        if (isConfirmed) {
+            window.location.href = deleteUrl;
+        }
+    }
+</script>

@@ -1,5 +1,6 @@
 using BookLibraryApp.Controllers;
 using BookLibraryApp.Services;
+using BookLibraryApp.Services.IServices;
 
 namespace BookLibraryApp
 {
@@ -12,7 +13,9 @@ namespace BookLibraryApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpClient();
-            builder.Services.AddTransient<APIService>();
+            builder.Services.AddTransient<BookApiService>();
+            builder.Services.AddHttpClient<IBookService, BookService>();
+            builder.Services.AddScoped<IBookService, BookService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -32,7 +35,7 @@ namespace BookLibraryApp
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Book}/{action=Index}");
 
             app.Run();
         }

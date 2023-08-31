@@ -15,8 +15,4 @@
     <ProjectReference Include="..\BookLibraryApi\BookLibraryApi.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Interface\" />
-  </ItemGroup>
-
 </Project>
