@@ -1,6 +1,7 @@
 ﻿using Azure;
 using BookLibraryApi.Models;
 using BookLibraryApi.Repositories.Interface;
+using BookLibraryApp.Models;
 using BookLibraryApp.Services;
 using BookLibraryApp.Services.IServices;
 using BookLibraryApp.ViewModels;
@@ -23,12 +24,13 @@ namespace BookLibraryApp.Controllers
         public BookController(IBookService bookService, HttpClient httpClient, ILogger<BookController> logger, BookApiService apiService)
         {
             _logger = logger;
-            _httpClient = httpClient;   
+            _httpClient = httpClient;
             _apiService = apiService;
 
             _bookService = bookService;
         }
 
+        //Index - Get All Books
         public async Task<IActionResult> Index()
         {
             List<Book> list = new();
@@ -40,6 +42,8 @@ namespace BookLibraryApp.Controllers
             }
             return View(list);
         }
+
+        //Create - Get Create View
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -65,6 +69,7 @@ namespace BookLibraryApp.Controllers
             }
         }
 
+        //Create - Post Request
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Book book)
@@ -82,6 +87,9 @@ namespace BookLibraryApp.Controllers
             TempData["error"] = "Error encountered.";
             return RedirectToAction("Index");
         }
+
+        //Put - Get Put View
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             _logger.LogInformation($"Edit GET called with id: {id}");
@@ -121,7 +129,7 @@ namespace BookLibraryApp.Controllers
 
             return View(viewModel);
         }
-
+        //Put - Put Request
         [HttpPut]
         public async Task<IActionResult> Edit([FromBody] Book book)
         {
@@ -147,6 +155,47 @@ namespace BookLibraryApp.Controllers
             _logger.LogWarning("Invalid model.");
             return BadRequest(new { Message = "Invalid model" });
         }
+        //Delete - Remove Book
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var response = await _bookService.DeleteAsync<ApiResponse>(id, "");
+                _logger.LogInformation($"Attempting to delete id {id}");
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                _logger.LogError("Exception from deleting ID.");
+                return RedirectToAction("Error");
+            }
+        }
+        //Details - Get Book Id
+        public async Task<IActionResult> Details(int id)
+        {
+            try
+            {
+                var response = await _bookService.GetAsync<ApiResponse>(id, "");
+                if (response != null)
+                {
+                    _logger.LogInformation($"Details object content: {response.Result}");
+                    var book = JsonConvert.DeserializeObject<Book>(Convert.ToString(response.Result));
+                    return View(book);
+                }
+                else
+                {
+                    return View("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
+        }
+
+
     }
 
     ////GetAllGenres
