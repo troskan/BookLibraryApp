@@ -23,3 +23,18 @@ body {
 .bold {
     font-weight: bold;
 }
+
+#layout-container {
+    background-color: rgba(256, 256, 256, 0.8);
+    border-radius: 10px;
+    padding: 2rem;
+}
+body {
+    background-image: url("https://images.unsplash.com/photo-1692877317161-dddb40d233f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1933&q=80");
+}
+footer {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+tr{
+    border: 1px solid rgba(0,0,0,0.3);
+}

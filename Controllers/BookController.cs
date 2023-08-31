@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.DotNet.MSIdentity.Shared;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Text;
 
 namespace BookLibraryApp.Controllers
@@ -195,6 +196,17 @@ namespace BookLibraryApp.Controllers
             }
         }
 
+        public async Task<IActionResult> Search(string searchString)
+        {
+            var list = new List<Book>();
+            var response = await _bookService.Search<ApiResponse>(searchString);
+            if (response != null && response.IsSuccess)
+            {
+                list = JsonConvert.DeserializeObject<List<Book>>(Convert.ToString(response.Result));
+                return View("Index", list);
+            }
+            return View("Error");
+        }
 
     }
 

@@ -10,5 +10,6 @@ namespace BookLibraryApp.Services.IServices
         Task<T> UpdateAsync<T>(Book book, string token);
         Task<T> DeleteAsync<T>(int id, string token);
         Task<T> GetGenres<T>();
+        Task<T> Search<T>(string searchString);
     }
 }

@@ -74,5 +74,14 @@ namespace BookLibraryApp.Services
                 Token = ""
             });
         }
+        public Task<T> Search<T>(string searchString)
+        {
+            return SendAsync<T>(new Models.ApiRequest()
+            {
+                ApiType = Utility.ApiUtility.ApiType.GET,
+                Url = bookUrl + "/search?searchString=" + searchString,
+                Token = ""
+            });
+        }
     }
 }
