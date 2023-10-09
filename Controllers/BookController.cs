@@ -93,6 +93,8 @@ namespace BookLibraryApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            _logger.LogCritical("Inside GET Edit");
+
             _logger.LogInformation($"Edit GET called with id: {id}");
 
             var genreResponse = await _bookService.GetGenres<ApiResponse>();
@@ -122,29 +124,37 @@ namespace BookLibraryApp.Controllers
 
             Book book = JsonConvert.DeserializeObject<Book>(Convert.ToString(bookResponse.Result));
 
-            var viewModel = new BookEditViewModel()
+            if (book != null)
             {
-                Book = book,
-                Genres = genreList
-            };
-
-            return View(viewModel);
+                var viewModel = new BookEditViewModel()
+                {
+                    Book = book,
+                    Genres = genreList
+                };
+                return View(viewModel);
+            }
+            else
+            {
+                _logger.LogWarning("Book object is null.");
+                return View("Error");
+            }
         }
+
         //Put - Put Request
-        [HttpPut]
-        public async Task<IActionResult> Edit([FromBody] Book book)
+        [HttpPost]
+        public async Task<IActionResult> Edit(Book book)
         {
             _logger.LogInformation($"Edit PUT called with book: {JsonConvert.SerializeObject(book)}");
-
+            _logger.LogCritical("Inside PUT Edit");
             if (ModelState.IsValid)
             {
-                // Call your service to update the book
                 var response = await _bookService.UpdateAsync<ApiResponse>(book, "");
 
                 if (response.IsSuccess)
                 {
                     _logger.LogInformation("Book updated successfully.");
-                    return Ok(new { Message = "Book updated successfully" });
+
+                    return RedirectToAction("Index");
                 }
                 else
                 {
@@ -210,132 +220,5 @@ namespace BookLibraryApp.Controllers
 
     }
 
-    ////GetAllGenres
-    //[HttpGet]
-    //public async Task<ActionResult> Create()
-    //{
-    //    try
-    //    {
-    //        var genres = await _apiService.GetGenres();
-    //        return View(genres);
-    //    }
-    //    catch (Exception)
-    //    {
-    //        return View("Error");
-    //        throw;
-    //    }
-
-    //}
-
-    ////PostBook
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<ActionResult> Create(Book book)
-    //{
-    //    try
-    //    {
-    //        await _apiService.AddBook(book);
-    //        return View(book);
-    //    }
-    //    catch (Exception)
-    //    {
-    //        return RedirectToAction("Index");
-    //    }
-    //}
-    ////GetUpdateBook
-    //[HttpGet]
-    //public async Task<ActionResult> Edit(int id)
-    //{
-    //    var bookApi = $"https://localhost:7262/books/{id}";
-    //    var genresUrl = "https://localhost:7262/genres";
-
-    //    var bookResponse = await _httpClient.GetAsync(bookApi);
-    //    _logger.LogInformation($"Response from API: {await bookResponse.Content.ReadAsStringAsync()}");
-
-    //    if (!bookResponse.IsSuccessStatusCode)
-    //    {
-    //        _logger.LogError("Failed to retrieve book object.");
-    //        return View("Error");
-    //    }
-    //    var bookToEdit = await bookResponse.Content.ReadFromJsonAsync<Book>();
-
-    //    var genreResponse = await _httpClient.GetAsync(genresUrl);
-    //    if (!genreResponse.IsSuccessStatusCode)
-    //    {
-    //        _logger.LogError("Failed to retrieve genre object.");
-    //        return View("Error");
-    //    }
-    //    var genres = await genreResponse.Content.ReadFromJsonAsync<List<string>>();
-
-    //    var viewModel = new BookEditViewModel
-    //    {
-    //        Book = bookToEdit,
-    //        Genres = genres
-    //    };
-
-    //    return View(viewModel);
-    //}
-    ////UpdateBook
-    //[HttpPost]
-    //public async Task<ActionResult> Edit(int id, Book bookToEdit) 
-    //{
-    //    var apiUrl = $"https://localhost:7262/book/{id}";
-    //    var genresUrl = "https://localhost:7262/genres";
-
-    //    var bookJson = JsonConvert.SerializeObject(bookToEdit);
-    //    var content = new StringContent(bookJson, Encoding.UTF8, "application/json");
-
-    //    var response = await _httpClient.PutAsync(apiUrl, content);
-
-    //    if (response.IsSuccessStatusCode)
-    //    {
-    //        _logger.LogInformation("API PUT SUCCESSFUL, RETURN TO INDEX");
-    //        return RedirectToAction("Index");
-    //    }
-    //    else
-    //    {
-    //        _logger.LogError($"Could not post Model. {response.Content.ReadAsStringAsync()}");
-    //        var genresResponse = await _httpClient.GetAsync(genresUrl);
-    //        if (!genresResponse.IsSuccessStatusCode)
-    //        {
-    //            var responseBody = await genresResponse.Content.ReadAsStringAsync();
-    //            _logger.LogInformation($"Genres Response: {responseBody}");
-    //            return View("Error");
-    //        }
-    //        var genres = await genresResponse.Content.ReadFromJsonAsync<List<string>>();
-
-
-
-    //        var viewModel = new BookEditViewModel
-    //        {
-    //            Book = bookToEdit,
-    //            Genres = genres
-    //        };
-
-    //        // Log the error or display it to the user
-    //        var errorMessage = await response.Content.ReadAsStringAsync();
-    //        ModelState.AddModelError(string.Empty, errorMessage);
-    //        return View(viewModel);  // Return to the edit view with the model to show errors
-    //    }
-
-    //}
-
-
-
-    ////GetBook{string} *Search*
-    //public async Task<IActionResult> Search(string searchString)
-    //{
-    //    var response = await _httpClient.GetAsync($"https://localhost:7262/search?searchString={searchString}");
-
-    //    if (response.IsSuccessStatusCode)
-    //    {
-    //        var jsonResponse = await response.Content.ReadAsStringAsync();
-    //        var books = JsonConvert.DeserializeObject<List<Book>>(jsonResponse);
-    //        return View("Index", books);
-    //    }
-    //    _logger.LogError("Error could not fetch Search result");
-    //    return View("Error");
-    //}
-
-
+   
 }
